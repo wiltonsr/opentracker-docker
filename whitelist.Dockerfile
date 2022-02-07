@@ -24,7 +24,7 @@ RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
         /^#.*DWANT_ACCESSLIST_WHITE/s/^#//; \
       ' Makefile ; \
       # Build opentracker statically to use it in scratch image
-      make CC="gcc -static" ; \
+      LDFLAGS=-static make ; \
       bash -c 'mkdir -pv /tmp/stage/{etc/opentracker,bin}' ; \
       cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
       # Opentrack conf whitelist sed expressions
