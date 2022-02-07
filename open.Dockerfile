@@ -40,7 +40,8 @@ WORKDIR /etc/opentracker
 
 USER opentracker
 
-EXPOSE 6969
+EXPOSE 6969/udp
+EXPOSE 6969/tcp
 
 ENTRYPOINT ["/bin/opentracker"]
 CMD ["-f", "/etc/opentracker/opentracker.conf"]
