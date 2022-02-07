@@ -14,11 +14,10 @@ WORKDIR /usr/src
 
 # http://erdgeist.org/arts/software/opentracker/#build-instructions
 RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
-      cd libowfat ; \
-      make ; \
-      cd .. ; \
       git clone git://erdgeist.org/opentracker ; \
-      cd opentracker ; \
+      cd /usr/src/libowfat ; \
+      make ; \
+      cd /usr/src/opentracker ; \
       # Makefile whitelist sed expressions
       sed -ri -e '\
         /^#.*DWANT_ACCESSLIST_WHITE/s/^#//; \
