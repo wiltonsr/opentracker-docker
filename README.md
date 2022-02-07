@@ -152,9 +152,9 @@ docker run \
 docker run \
   --rm \
   --name opentracker \
-  -v $PWD/local-blacklist:/etc/opentracker/whitelist \
+  -v $PWD/local-blacklist:/etc/opentracker/blacklist \
   -p 6969:6969/udp -p 6969:6969 \
-  wiltonsr/opentracker:whitelist
+  wiltonsr/opentracker:blacklist
 ```
 
 ### Reloading file changes
