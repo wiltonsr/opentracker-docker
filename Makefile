@@ -15,8 +15,8 @@ $(GEN):
 .PHONY: $(BUILD)
 $(BUILD):
 	$(eval TAG = $(@:build-%=%))
-	@echo Building tag $(TAG) from Dockerfile.$(TAG) file...
-	docker build -t $(IMAGE):$(TAG) -f Dockerfile.$(TAG) .
+	@echo Building tag $(TAG) from $(TAG).Dockerfile file...
+	docker build -t $(IMAGE):$(TAG) -f $(TAG).Dockerfile .
 
 .PHONY: tag-latest
 tag-latest:

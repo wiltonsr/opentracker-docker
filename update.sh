@@ -9,7 +9,7 @@ variants=(
 
 function create_variant() {
   variant=$1
-	variantFile="Dockerfile.$variant"
+	variantFile="$variant.Dockerfile"
 
 	touch ${variantFile}
 
