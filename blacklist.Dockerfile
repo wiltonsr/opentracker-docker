@@ -12,12 +12,14 @@ RUN useradd opentracker
 
 WORKDIR /usr/src
 
-# http://erdgeist.org/arts/software/opentracker/#build-instructions
+# Run libowfat compilation in separated layer to benefit from docker layer cache
 RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
       git clone git://erdgeist.org/opentracker ; \
       cd /usr/src/libowfat ; \
-      make ; \
-      cd /usr/src/opentracker ; \
+      make
+
+# http://erdgeist.org/arts/software/opentracker/#build-instructions
+RUN cd /usr/src/opentracker ; \
       # Makefile blacklist sed expressions
       sed -ri -e '\
         /^#.*DWANT_ACCESSLIST_BLACK/s/^#//; \
