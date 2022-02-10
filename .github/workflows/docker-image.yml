@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKER_USER: ${{secrets.DOCKER_USER}}
+      DOCKER_PASS: ${{secrets.DOCKER_PASS}}
+      DOCKER_IMAGE: opentracker
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Connect to DockerHub
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+      - name: Build the Docker image
+        run: make build-all-variants
+
+      - name: Push Docker image to DockerHub
+        run: docker push -a $DOCKER_USER/$DOCKER_IMAGE
+
+      - name: Push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        with:
+          destination_container_repo: ${{env.DOCKER_USER}}/${{env.DOCKER_IMAGE}}
+          provider: dockerhub
+          short_description: "Docker image from scratch, customizable, simple, and small, for the opentracker project."
+          readme_file: "README.md"
