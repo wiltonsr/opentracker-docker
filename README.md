@@ -138,6 +138,9 @@ Because of that there are two another tags, `blacklist` and `whitelist`, which w
 ### Whitelist Mode
 
 ```bash
+touch local-whitelist
+chmod -v 0666 local-whitelist
+
 docker run \
   --rm \
   --name opentracker \
@@ -149,6 +152,9 @@ docker run \
 ### Blacklist Mode
 
 ```bash
+touch local-blacklist
+chmod -v 0666 local-blacklist
+
 docker run \
   --rm \
   --name opentracker \

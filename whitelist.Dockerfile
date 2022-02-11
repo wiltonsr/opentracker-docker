@@ -21,20 +21,23 @@ RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
 
 # http://erdgeist.org/arts/software/opentracker/#build-instructions
 RUN cd /usr/src/opentracker ; \
-      # Makefile whitelist sed expressions
-      sed -ri -e '\
-        /^#.*DWANT_ACCESSLIST_WHITE/s/^#//; \
-      ' Makefile ; \
   # Build opentracker statically to use it in scratch image
-  LDFLAGS=-static make ; \
+  LDFLAGS=-static make \
+  FEATURES+=-DWANT_FULLSCRAPE \
+  FEATURES+=-DWANT_FULLLOG_NETWORKS \
+  FEATURES+=-DWANT_LOG_NUMWANT \
+  FEATURES+=-DWANT_MODEST_FULLSCRAPES \
+  FEATURES+=-DWANT_SPOT_WOODPECKER \
+  FEATURES+=-DWANT_ACCESSLIST_WHITE \
+   ;\
   bash -c 'mkdir -pv /tmp/stage/{etc/opentracker,bin}' ; \
+  bash -c 'touch /tmp/stage/etc/opentracker/{white,black}list' ; \
   cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
-      # Opentrack conf whitelist sed expressions
-      sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
-        s!(.*)(access.whitelist)(.*)!\2 /etc/opentracker/whitelist!g; \
-      ' /tmp/stage/etc/opentracker/opentracker.conf ; \
-      touch /tmp/stage/etc/opentracker/whitelist ; \
+  # Opentrack configuration file
+  sed -ri \
+  -e 's!(.*)(tracker.user)(.*)!\2 farmhand!g;' \
+  -e 's!(.*)(access.whitelist)(.*)!\2 /etc/opentracker/whitelist!g;' \
+  /tmp/stage/etc/opentracker/opentracker.conf ; \
   install -m 755 opentracker.debug /tmp/stage/bin ; \
   make DESTDIR=/tmp/stage BINDIR="/bin" install
 

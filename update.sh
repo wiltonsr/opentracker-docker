@@ -8,14 +8,22 @@ variants=(
 )
 
 function create_variant() {
-  variant=$1
-  variantFile="$variant.Dockerfile"
+  declare -a features=(
+    "-DWANT_FULLSCRAPE"
+    "-DWANT_FULLLOG_NETWORKS"
+    "-DWANT_LOG_NUMWANT"
+    "-DWANT_MODEST_FULLSCRAPES"
+    "-DWANT_SPOT_WOODPECKER"
+  )
 
-  touch "${variantFile}"
+  variant=$1
+  variant_file="$variant.Dockerfile"
+
+  touch "${variant_file}"
 
   template="Dockerfile.template"
 
-  cat <<__EOF__ >"${variantFile}"
+  cat <<__EOF__ >"${variant_file}"
 #
 # NOTE: THIS DOCKERFILE IS GENERATED VIA update.sh from ${template}
 #
@@ -23,75 +31,43 @@ function create_variant() {
 #
 __EOF__
 
-  cat "$template" >>"$variantFile"
+  cat "$template" >>"$variant_file"
 
-  echo "updating $variantFile"
+  echo "updating $variant_file"
 
   case "$variant" in
   open)
-    cat <<'__EOF__' >/tmp/makefileSedExpressions
-      # No need to change Makefile to open mode
-__EOF__
-
-    cat <<'__EOF__' >/tmp/opentrackerSedExpressions
-    # Opentrack conf whitelist sed expressions
-    sed -ri -e '\
-      s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
-    ' /tmp/stage/etc/opentracker/opentracker.conf ; \
-__EOF__
-
+    features+=()
+    extra_sed_confs=''
     ;;
 
   blacklist)
-    cat <<'__EOF__' >/tmp/makefileSedExpressions
-      # Makefile blacklist sed expressions
-      sed -ri -e '\
-        /^#.*DWANT_ACCESSLIST_BLACK/s/^#//; \
-      ' Makefile ; \
-__EOF__
-
-    cat <<'__EOF__' >/tmp/opentrackerSedExpressions
-      # Opentrack conf blacklist sed expressions
-      sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
-        s!(.*)(access.blacklist)(.*)!\2 /etc/opentracker/blacklist!g; \
-      ' /tmp/stage/etc/opentracker/opentracker.conf ; \
-      touch /tmp/stage/etc/opentracker/blacklist ; \
-__EOF__
-
+    features+=("-DWANT_ACCESSLIST_BLACK")
+    extra_sed_confs="-e 's!(.*)(access.blacklist)(.*)!\\\2 /etc/opentracker/blacklist!g;'"
     ;;
 
   whitelist)
-    cat <<'__EOF__' >/tmp/makefileSedExpressions
-      # Makefile whitelist sed expressions
-      sed -ri -e '\
-        /^#.*DWANT_ACCESSLIST_WHITE/s/^#//; \
-      ' Makefile ; \
-__EOF__
-
-    cat <<'__EOF__' >/tmp/opentrackerSedExpressions
-      # Opentrack conf whitelist sed expressions
-      sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
-        s!(.*)(access.whitelist)(.*)!\2 /etc/opentracker/whitelist!g; \
-      ' /tmp/stage/etc/opentracker/opentracker.conf ; \
-      touch /tmp/stage/etc/opentracker/whitelist ; \
-__EOF__
-
+    features+=("-DWANT_ACCESSLIST_WHITE")
+    extra_sed_confs="-e 's!(.*)(access.whitelist)(.*)!\\\2 /etc/opentracker/whitelist!g;'"
     ;;
+
   esac
 
-  # Replace the variables.
-  sed -i '/%%MAKEFILE_SED_EXPRESSIONS%%/ {
-    r /tmp/makefileSedExpressions
-    d
-    }' "$variantFile"
+  features_sed_string=''
+  for i in "${features[@]}"; do
+    # Add extra slashes to escape on below sed substitution
+    features_sed_string+="FEATURES+=${i} \\\\\n  "
+  done
 
-  sed -i '/%%OPENTRACKER_CONF_SED_EXPRESSIONS%%/ {
-    r /tmp/opentrackerSedExpressions
-    d
-    }' "$variantFile"
+  # Replace MAKEFILE_FEATURES variable from template
+  sed -ri \
+    -e 's@%%MAKEFILE_FEATURES%%@'"${features_sed_string}"'@g;' \
+    "$variant_file"
 
+  # Replace OPENTRACKER_CONFS variable from template
+  sed -ri \
+    -e 's@%%OPENTRACKER_CONFS%%@'"${extra_sed_confs}"'@g;' \
+    "$variant_file"
 }
 
 if [ -z "$1" ]; then
