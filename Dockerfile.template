@@ -15,12 +15,11 @@ RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
 
 # http://erdgeist.org/arts/software/opentracker/#build-instructions
 RUN cd /usr/src/opentracker ; \
-      %%MAKEFILE_SED_EXPRESSIONS%% \
       # Build opentracker statically to use it in scratch image
-      LDFLAGS=-static make ; \
+      LDFLAGS=-static make \
+      %%MAKEFILE_FEATURES%% ;\
       bash -c 'mkdir -pv /tmp/stage/{etc/opentracker,bin}' ; \
-      cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
-      %%OPENTRACKER_CONF_SED_EXPRESSIONS%% \
+      cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/ ; \
       install -m 755 opentracker.debug /tmp/stage/bin ; \
       make DESTDIR=/tmp/stage BINDIR="/bin" install
 
