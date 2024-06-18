@@ -3,8 +3,11 @@ FROM gcc:11 as compile-stage
 RUN apt update ; \
   apt install cvs -y
 
-RUN useradd farmhand && \
-  usermod -u 6969 farmhand
+RUN adduser \
+  --system --disabled-login \
+  --uid 6969 --group \
+  --home /etc/opentracker \
+  farmhand
 
 WORKDIR /usr/src
 
