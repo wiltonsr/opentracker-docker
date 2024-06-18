@@ -6,7 +6,7 @@
 FROM gcc:11 as compile-stage
 
 RUN apt update ; \
-      apt install cvs -y
+  apt install cvs -y
 
 RUN useradd opentracker
 
@@ -14,23 +14,23 @@ WORKDIR /usr/src
 
 # Run libowfat compilation in separated layer to benefit from docker layer cache
 RUN cvs -d :pserver:cvs@cvs.fefe.de:/cvs -z9 co libowfat ; \
-      git clone git://erdgeist.org/opentracker ; \
-      cd /usr/src/libowfat ; \
-      make
+  git clone git://erdgeist.org/opentracker ; \
+  cd /usr/src/libowfat ; \
+  make
 
 # http://erdgeist.org/arts/software/opentracker/#build-instructions
 RUN cd /usr/src/opentracker ; \
       # No need to change Makefile to open mode
-      # Build opentracker statically to use it in scratch image
-      LDFLAGS=-static make ; \
-      bash -c 'mkdir -pv /tmp/stage/{etc/opentracker,bin}' ; \
-      cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
+  # Build opentracker statically to use it in scratch image
+  LDFLAGS=-static make ; \
+  bash -c 'mkdir -pv /tmp/stage/{etc/opentracker,bin}' ; \
+  cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
     # Opentrack conf whitelist sed expressions
     sed -ri -e '\
       s!(.*)(tracker.user)(.*)!\2 opentracker!g; \
     ' /tmp/stage/etc/opentracker/opentracker.conf ; \
-      install -m 755 opentracker.debug /tmp/stage/bin ; \
-      make DESTDIR=/tmp/stage BINDIR="/bin" install
+  install -m 755 opentracker.debug /tmp/stage/bin ; \
+  make DESTDIR=/tmp/stage BINDIR="/bin" install
 
 FROM scratch
 
