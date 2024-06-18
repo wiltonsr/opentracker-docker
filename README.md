@@ -96,7 +96,7 @@ All `tags` use default configuration file from [here](https://erdgeist.org/gitwe
 
 Some adjusts are made:
 
-- `tracker.user` is setted to `opentracker` [USER](https://docs.docker.com/engine/reference/builder/#user) in all tags.
+- `tracker.user` is setted to `farmhand` [USER](https://docs.docker.com/engine/reference/builder/#user) in all tags.
 - `access.whitelist` is setted to `/etc/opentracker/whitelist` in `whitelist` tag.
 - `access.blacklist` is setted to `/etc/opentracker/blacklist` in `blacklist` tag.
 

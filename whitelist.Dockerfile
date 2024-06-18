@@ -8,7 +8,8 @@ FROM gcc:11 as compile-stage
 RUN apt update ; \
   apt install cvs -y
 
-RUN useradd opentracker
+RUN useradd farmhand && \
+  usermod -u 6969 farmhand
 
 WORKDIR /usr/src
 
@@ -30,7 +31,7 @@ RUN cd /usr/src/opentracker ; \
   cp -v opentracker.conf.sample /tmp/stage/etc/opentracker/opentracker.conf ; \
       # Opentrack conf whitelist sed expressions
       sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 opentracker!g; \
+        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
         s!(.*)(access.whitelist)(.*)!\2 /etc/opentracker/whitelist!g; \
       ' /tmp/stage/etc/opentracker/opentracker.conf ; \
       touch /tmp/stage/etc/opentracker/whitelist ; \
@@ -44,7 +45,7 @@ COPY --from=compile-stage /etc/passwd /etc/passwd
 
 WORKDIR /etc/opentracker
 
-USER opentracker
+USER 6969
 
 EXPOSE 6969/udp
 EXPOSE 6969/tcp

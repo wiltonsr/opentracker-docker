@@ -36,7 +36,7 @@ __EOF__
     cat <<'__EOF__' >/tmp/opentrackerSedExpressions
     # Opentrack conf whitelist sed expressions
     sed -ri -e '\
-      s!(.*)(tracker.user)(.*)!\2 opentracker!g; \
+      s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
     ' /tmp/stage/etc/opentracker/opentracker.conf ; \
 __EOF__
 
@@ -53,7 +53,7 @@ __EOF__
     cat <<'__EOF__' >/tmp/opentrackerSedExpressions
       # Opentrack conf blacklist sed expressions
       sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 opentracker!g; \
+        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
         s!(.*)(access.blacklist)(.*)!\2 /etc/opentracker/blacklist!g; \
       ' /tmp/stage/etc/opentracker/opentracker.conf ; \
       touch /tmp/stage/etc/opentracker/blacklist ; \
@@ -72,7 +72,7 @@ __EOF__
     cat <<'__EOF__' >/tmp/opentrackerSedExpressions
       # Opentrack conf whitelist sed expressions
       sed -ri -e '\
-        s!(.*)(tracker.user)(.*)!\2 opentracker!g; \
+        s!(.*)(tracker.user)(.*)!\2 farmhand!g; \
         s!(.*)(access.whitelist)(.*)!\2 /etc/opentracker/whitelist!g; \
       ' /tmp/stage/etc/opentracker/opentracker.conf ; \
       touch /tmp/stage/etc/opentracker/whitelist ; \

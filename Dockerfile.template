@@ -3,7 +3,8 @@ FROM gcc:11 as compile-stage
 RUN apt update ; \
   apt install cvs -y
 
-RUN useradd opentracker
+RUN useradd farmhand && \
+  usermod -u 6969 farmhand
 
 WORKDIR /usr/src
 
@@ -31,7 +32,7 @@ COPY --from=compile-stage /etc/passwd /etc/passwd
 
 WORKDIR /etc/opentracker
 
-USER opentracker
+USER 6969
 
 EXPOSE 6969/udp
 EXPOSE 6969/tcp
