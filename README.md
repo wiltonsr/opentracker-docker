@@ -1,6 +1,11 @@
 # opentracker-docker
 
-Docker image from scratch, customizable, simple and small, for the [opentracker project](https://erdgeist.org/arts/software/opentracker/), a open and free bittorrent tracker.
+Docker image from scratch, customizable, simple and small, for the [opentracker project](https://erdgeist.org/arts/software/opentracker/), an open and free BitTorrent tracker.
+
+## Updates
+
+- The `opentracker`'s updates can be found [here](https://erdgeist.org/gitweb/opentracker/).
+- The `opentracker-docker`'s updates can be found [here](https://github.com/wiltonsr/opentracker-docker).
 
 ## How to use this image
 
