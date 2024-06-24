@@ -1,4 +1,4 @@
-VARIANTS = open	blacklist	whitelist
+VARIANTS = open blacklist whitelist
 GEN = $(addprefix gen-,$(VARIANTS))
 BUILD = $(addprefix build-,$(VARIANTS))
 IMAGE = wiltonsr/opentracker
