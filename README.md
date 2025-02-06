@@ -19,7 +19,9 @@ The `blacklist` and `whitelist` tags contains a Opentracker builded with `-DWANT
 
 ## Using in `open` Mode
 
-The image has `/bin/opentracker` binary as [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint) and `-f /etc/opentracker/opentracker.conf` as default [CMD](https://docs.docker.com/engine/reference/builder/#exec-form-entrypoint-example).
+The image has `/tini -- /bin/opentracker` binary as [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint) and `-f /etc/opentracker/opentracker.conf` as default [CMD](https://docs.docker.com/engine/reference/builder/#exec-form-entrypoint-example).
+
+We use [tini](https://github.com/krallin/tini), a tiny but valid init for containers, to manage `PID 1` and correctly handle signals to `opentracker`.
 
 So you can run:
 
@@ -55,7 +57,7 @@ Now you can access [Opentracker Stats page](https://erdgeist.org/arts/software/o
 
 ### Debug Mode
 
-All `tags` also contains `/bin/opentracker.debug` binary. So you could run Opentracker in `debug mode` overriding default `ENTRYPOINT`.
+All `tags` also contains `/bin/opentracker.debug` binary. So you could run Opentracker in `debug mode` overriding default `ENTRYPOINT` and `CMD`.
 
 ```bash
 docker run \
@@ -63,9 +65,9 @@ docker run \
   -d \
   --name opentracker \
   -p 6969:6969/udp -p 6969:6969 \
-  --entrypoint="/bin/opentracker.debug" \
+  --entrypoint="/tini" \
   wiltonsr/opentracker:open \
-  -f /etc/opentracker/opentracker.conf
+  -- /bin/opentracker.debug -f /etc/opentracker/opentracker.conf
 ```
 
 It is also possible to override the default command with:

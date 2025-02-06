@@ -3,7 +3,11 @@
 #
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
-FROM gcc:11 as compile-stage
+FROM gcc:14 as compile-stage
+
+ARG TINI_VERSION=v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-static /tini
+RUN chmod +x /tini
 
 RUN apt update ; \
   apt install cvs -y
@@ -45,6 +49,7 @@ RUN cd /usr/src/opentracker ; \
 
 FROM scratch
 
+COPY --from=compile-stage /tini /
 COPY --from=compile-stage /tmp/stage /
 COPY --from=compile-stage /etc/passwd /etc/passwd
 
@@ -55,5 +60,5 @@ USER 6969
 EXPOSE 6969/udp
 EXPOSE 6969/tcp
 
-ENTRYPOINT ["/bin/opentracker"]
+ENTRYPOINT ["/tini", "--", "/bin/opentracker"]
 CMD ["-f", "/etc/opentracker/opentracker.conf"]
